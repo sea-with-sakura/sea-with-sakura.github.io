@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <title>樱叶落花~</title>
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script src="https://kit.fontawesome.com/1b0cc375b8.js" crossorigin="anonymous"></script>
+        <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+        <style>
+            .main-links {
+                margin: 1.5em 0;
+                text-align: center;
+            }
+            .main-links a {
+                display: inline-block;
+                margin: 0.5em;
+                padding: 0.6em 1.2em;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 15px; /* 增加圆角效果，从原来的5px增加到15px */
+                font-size: 1.2em;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+            .main-links a:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            .main-links i {
+                margin-right: 8px;
+            }
+            
+            /* 重设页脚样式 */
+            #footer {
+                margin-top: 3em;  /* 增加与上方内容的距离 */
+            }
+            
+            #footer p {
+                margin: 0.7em 0;
+            }
+            
+            .tool-link {
+                margin-bottom: 1.5em;
+            }
+            
+            .copyright-text {
+                font-size: 0.9em;
+                color: rgba(255, 255, 255, 0.6);
+            }
+        </style>
+    </head>
+	<body class="is-preload">
+		<div id="wrapper">
+			<div id="bg"></div>
+			<!-- <div id="overlay"></div> -->
+			<div id="main">
+				<!-- Header -->
+					<header id="header">
+						<h1>樱叶 落花</h1>
+						<div class="main-links">
+							<a href="xj_lyh"><i class="fa-solid fa-leaf"></i>xj-lyh</a>
+							<a href="wait"><i class="fa-solid fa-cherry-blossom"></i>Sakura</a>
+							<a href="garden_no_baby"><i class="fa-solid fa-seedling"></i>Garden-No-Baby</a>
+						</div>
+						<nav>
+							<ul>
+								<li><a href="https://gitee.com/sakura_lyh" class="fa-brands fa-github"><span class="label">Gitee</span></a></li>
+								<li><a href="mailto:liu_yu_hao@126.com" class="fa-regular fa-envelope"><span class="label">E-mail</span></a></li>
+							</ul>
+						</nav>
+						<p class="tool-link">Tools: <a href="bf16-dex">BF16 Converter</a></p>
+					</header>
+
+				<!-- Footer -->
+					<footer id="footer">
+							<p class="copyright-text">Designed by Liu Yuhao</p>
+					</footer>
+			</div>
+		</div>
+		<script>
+			window.onload = function() { document.body.classList.remove('is-preload'); }
+			window.ontouchmove = function() { return false; }
+			window.onorientationchange = function() { document.body.scrollTop = 0; }
+		</script>
+	</body>
+</html>

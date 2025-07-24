@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四月天里的我们 | 武汉青春诗篇</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 添加思源宋体和手写字体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', 'Noto Serif SC', sans-serif;
+            background-color: #f8f5f2;
+            color: #333;
+        }
+        
+        /* 手写字体 */
+        .handwriting-font {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        
+        /* 衬线体文本 */
+        .serif-text {
+            font-family: 'Noto Serif SC', serif;
+            line-height: 1.8;
+        }
+        
+        .luxury-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gallery-item {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        
+        /* 动态下划线 */
+        .animated-underline {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .animated-underline::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 0;
+            background-color: #d4af37;
+            transition: width 0.8s ease;
+        }
+        
+        .animated-underline.active::after {
+            width: 100%;
+        }
+        
+        .gold-line {
+            width: 80px;
+            height: 2px;
+            background-color: #d4af37;
+            margin: 20px auto;
+        }
+        
+        .memory-card {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .memory-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        
+        /* 语句卡片样式 */
+        .quote-card {
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 点击提示 */
+        .quote-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .quote-card:hover .quote-hint {
+            opacity: 1;
+        }
+        
+        /* 樱花动画 */
+        .cherry-blossom {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #ffc0cb;
+            opacity: 0.5;
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            animation: falling 10s linear infinite;
+        }
+        
+        @keyframes falling {
+            0% {
+                top: -10%;
+                left: 50%;
+                opacity: 0.5;
+                transform: rotate(45deg) translateX(0);
+            }
+            25% {
+                left: 55%;
+                opacity: 0.7;
+                transform: rotate(90deg) translateX(10px);
+            }
+            50% {
+                left: 45%;
+                opacity: 0.5;
+                transform: rotate(135deg) translateX(-10px);
+            }
+            75% {
+                left: 50%;
+                opacity: 0.3;
+                transform: rotate(180deg) translateX(0);
+            }
+            100% {
+                top: 110%;
+                left: 45%;
+                opacity: 0;
+                transform: rotate(225deg) translateX(-10px);
+            }
+        }
+        
+        /* 萤火虫动画 */
+        .firefly {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #ffff99;
+            border-radius: 50%;
+            box-shadow: 0 0 5px 2px rgba(255, 255, 153, 0.6);
+            opacity: 0.6;
+            animation: glow 6s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% {
+                opacity: 0.2;
+                box-shadow: 0 0 4px 1px rgba(255, 255, 153, 0.3);
+            }
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 8px 3px rgba(255, 255, 153, 0.6);
+            }
+        }
+        
+        /* 时光轴指示器 */
+        .timeline-indicator {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgba(212, 175, 55, 0.2);
+            z-index: 20;
+        }
+        
+        .timeline-progress {
+            height: 100%;
+            width: 0;
+            background-color: rgba(212, 175, 55, 0.7);
+            transition: width 0.3s ease;
+        }
+        
+        .timeline-point {
+            position: absolute;
+            top: -5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: rgba(212, 175, 55, 0.9);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+        
+        .timeline-label {
+            position: absolute;
+            top: -30px;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .timeline-point:hover .timeline-label {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="bg-white bg-opacity-90 shadow-sm fixed w-full z-10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="#" class="text-xl luxury-font text-gray-800">GardenNoBabies</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-600 hover:text-gray-900 transition">关于我们</a>
+                    <a href="#memories" class="text-gray-600 hover:text-gray-900 transition">回忆片段</a>
+                    <a href="#quotes" class="text-gray-600 hover:text-gray-900 transition">时光碎片</a>
+                </div>
+                <button class="md:hidden text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="relative pt-24 pb-32 bg-gray-100 overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <img src="https://source.unsplash.com/random/1600x900/?Wuhan,youth,friendship" alt="Friends in Wuhan" class="absolute inset-0 w-full h-full object-cover">
+        <div class="relative z-10 container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 handwriting-font tracking-wide">
+                <span class="animated-underline">眼里有光的大福蛋子们</span>
+            </h1>
+            <p class="text-xl text-white max-w-3xl mx-auto mb-10 opacity-90 serif-text">关于爱与同行的故事——四个灵魂在青志相遇，在同频中书写武汉的四季</p>
+            <div class="gold-line"></div>
+        </div>
+    </header>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl handwriting-font text-gray-800 mb-4">
+                    <span class="animated-underline">关于我们</span>
+                </h2>
+                <div class="gold-line"></div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <img src="/garden_no_baby/images/grass.webp" alt="Our Story" class="rounded-lg shadow-xl w-full object-contain h-96">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl luxury-font text-gray-800 mb-6">四个灵魂的青春图谱</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">我们是四块形状各异的拼图，在青志的契机下相遇。跨越山东山西南北山海，四个灵魂带着各自的故事与热爱，在武汉的街巷间编织出独特的青春图谱。</p>
+                    <p class="text-gray-600 mb-4 leading-relaxed">作为青志的核心成员，我们一同策划活动、复盘总结，把志愿工作过成闪闪发光的诗行；在广八路的鸡公煲店里交换心事，于东湖绿道骑着单车追逐晚风。</p>
+                    <p class="text-gray-600 leading-relaxed">从腼腆生疏到无话不谈，从志愿搭档到人生挚友，我们用数百个日夜的陪伴，证明了“同频共振”的情谊无需刻意维系——只需自然生长。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 回忆片段 - 修改为一行显示 -->
+    <section id="memories" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl handwriting-font text-gray-800 mb-4">
+                    <span class="animated-underline">我们的回忆片段</span>
+                </h2>
+                <div class="gold-line"></div>
+            </div>
+            <!-- 修改为单行布局 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- 记忆卡片1 -->
+                <div class="memory-card bg-white">
+                    <div class="overflow-hidden h-40">
+                        <img src="/garden_no_baby/images/cup.webp" alt="Late night talks" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="luxury-font text-lg mb-1 text-gray-800">襄阳归来的深夜操场</h3>
+                        <p class="text-gray-600 text-xs mb-2">一个难忘的夜晚</p>
+                        <p class="text-gray-600 text-sm line-clamp-4">香蕉片的甜香混着电话里的笑声，九点到十一点的星空见证了我们的低语。那时刚重逢，却已习惯用"淡忘"试探彼此的距离，直到发现：分开时思念会沉睡，重逢时默契即苏醒。</p>
+                    </div>
+                </div>
+              
+                <!-- 记忆卡片2 -->
+                <div class="memory-card bg-white">
+                    <div class="overflow-hidden h-40">
+                        <img src="/garden_no_baby/images/chicken.webp" alt="Chicken pot gathering" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="luxury-font text-lg mb-1 text-gray-800">广八路的鸡公煲革命</h3>
+                        <p class="text-gray-600 text-xs mb-2">心音共振的时刻</p>
+                        <p class="text-gray-600 text-sm line-clamp-4">实验室逃亡夜的贵州烧烤配折耳根，招新视频里"志愿者背后的志愿者"的誓言，还有那场考试周深夜的促膝长谈——凉风掠过时，四颗心音早已同频共振。</p>
+                    </div>
+                </div>
+              
+                <!-- 记忆卡片3 -->
+                <div class="memory-card bg-white">
+                    <div class="overflow-hidden h-40">
+                        <img src="/garden_no_baby/images/lake.webp" alt="Exploring Wuhan" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="luxury-font text-lg mb-1 text-gray-800">武汉地图上的脚印</h3>
+                        <p class="text-gray-600 text-xs mb-2">40721个共同坐标</p>
+                        <p class="text-gray-600 text-sm line-clamp-4">东湖骑行的伴奏仍在歌单循环，江滩零点航班的地铁站藏着疲惫却雀跃的足迹，花博会的荒诞探险最终变成"有你们便是乐园"的注解。高德地图上标记的不仅是景点，更是40721个共同坐标。</p>
+                    </div>
+                </div>
+
+                <!-- 记忆卡片4 -->
+                <div class="memory-card bg-white">
+                    <div class="overflow-hidden h-40">
+                        <img src="/garden_no_baby/images/birth.webp" alt="Daily fun" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="luxury-font text-lg mb-1 text-gray-800">阴间少女与猛男的日常</h3>
+                        <p class="text-gray-600 text-xs mb-2">欢笑不断的日常</p>
+                        <p class="text-gray-600 text-sm line-clamp-4">生日狼人杀时的"全寝保研"预言，欢乐谷中秋夜的未尽兴游乐场，还有群聊里永远置顶的"价值14元蛋糕"阴谋……当小郑梦见大牛请客海边游，连梦话都在偷笑。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 美好语句集 - 修改卡片大小 -->
+    <section id="quotes" class="py-20 bg-gray-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl handwriting-font text-white mb-4">
+                    <span class="animated-underline">时光碎片</span>
+                </h2>
+                <div class="gold-line" style="background-color: #f8f5f2;"></div>
+            </div>
+            
+            <!-- 卡片网格布局 - 调整大小 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-5 max-w-7xl mx-auto">
+                <!-- 关于相遇 -->
+                <div class="quote-card relative h-80" id="quote-meeting">
+                    <h3 class="text-xl handwriting-font text-amber-400 mb-4 text-center">「关于相遇」</h3>
+                    <div class="serif-text">
+                        <blockquote class="text-sm italic leading-relaxed">"山东山西，南方北方，千千万万人中我们四个聚在了广八路的鸡公煲。"</blockquote>
+                        <blockquote class="text-sm italic leading-relaxed mt-4">"命运让我们相遇，像四块形状不一的拼图，凑成属于我们四个的花园。"</blockquote>
+                    </div>
+                    <div class="quote-hint">点击展开</div>
+                    
+                    <!-- 樱花特效 -->
+                    <div class="cherry-blossom" style="left: 20%; animation-delay: 0s;"></div>
+                    <div class="cherry-blossom" style="left: 70%; animation-delay: 2s;"></div>
+                </div>
+                
+                <!-- 关于时光 -->
+                <div class="quote-card relative h-80" id="quote-time">
+                    <h3 class="text-xl handwriting-font text-amber-400 mb-4 text-center">「关于时光」</h3>
+                    <div class="serif-text">
+                        <blockquote class="text-sm italic leading-relaxed">"分开是必然，但回忆是永续的——就像久未见面的白月光，偶然照面便知从未不爱。"</blockquote>
+                        <blockquote class="text-sm italic leading-relaxed mt-4">"我们制造了武汉的万般模样，而武汉把我们的脚印酿成了故事。"</blockquote>
+                    </div>
+                    <div class="quote-hint">点击展开</div>
+                    
+                    <!-- 樱花特效 -->
+                    <div class="cherry-blossom" style="left: 30%; animation-delay: 1s;"></div>
+                    <div class="cherry-blossom" style="left: 60%; animation-delay: 3.5s;"></div>
+                </div>
+                
+                <!-- 关于陪伴 -->
+                <div class="quote-card relative h-80" id="quote-company">
+                    <h3 class="text-xl handwriting-font text-amber-400 mb-4 text-center">「关于陪伴」</h3>
+                    <div class="serif-text">
+                        <blockquote class="text-sm italic leading-relaxed">"我的世界本只有星星与夕阳，直到与你们共仰星空更璀璨，同别夕阳更遗憾。"</blockquote>
+                        <blockquote class="text-sm italic leading-relaxed mt-4">"你们是我稳定的情绪来源，是能放心卸下伪装的避风港。"</blockquote>
+                    </div>
+                    <div class="quote-hint">点击展开</div>
+                    
+                    <!-- 樱花特效 -->
+                    <div class="cherry-blossom" style="left: 15%; animation-delay: 2.2s;"></div>
+                    <div class="cherry-blossom" style="left: 55%; animation-delay: 4.2s;"></div>
+                </div>
+                
+                <!-- 关于成长 -->
+                <div class="quote-card relative h-80" id="quote-growth">
+                    <h3 class="text-xl handwriting-font text-amber-400 mb-4 text-center">「关于成长」</h3>
+                    <div class="serif-text">
+                        <blockquote class="text-sm italic leading-relaxed">"曾经讨厌镜头的我，因你们学会了坦然——原来被珍藏的不是特别的人，而是共同经历本身。"</blockquote>
+                        <blockquote class="text-sm italic leading-relaxed mt-4">"孤独的路因同行变得热闹，平凡的日子被你们过成闪闪发光的诗。"</blockquote>
+                    </div>
+                    <div class="quote-hint">点击展开</div>
+                    
+                    <!-- 樱花特效 -->
+                    <div class="cherry-blossom" style="left: 25%; animation-delay: 0.8s;"></div>
+                    <div class="cherry-blossom" style="left: 65%; animation-delay: 3.8s;"></div>
+                </div>
+                
+                <!-- 关于告别 -->
+                <div class="quote-card relative h-80" id="quote-farewell">
+                    <h3 class="text-xl handwriting-font text-amber-400 mb-4 text-center">「关于告别」</h3>
+                    <div class="serif-text">
+                        <blockquote class="text-sm italic leading-relaxed">"日后联系或会稀薄，但若想念，请随时拨通时光的电话。"</blockquote>
+                        <blockquote class="text-sm italic leading-relaxed mt-4">"山水一程三生有幸，纵使轨迹分离，青志的灯火永远为我们留一盏。"</blockquote>
+                    </div>
+                    <div class="quote-hint">点击展开</div>
+                    
+                    <!-- 樱花特效 -->
+                    <div class="cherry-blossom" style="left: 10%; animation-delay: 1.5s;"></div>
+                    <div class="cherry-blossom" style="left: 50%; animation-delay: 4.5s;"></div>
+                </div>
+            </div>
+
+            <style>
+                /* 为小屏幕优化卡片布局 */
+                @media (max-width: 768px) {
+                    .quote-card {
+                        height: auto;
+                        min-height: 200px;
+                        margin-bottom: 20px;
+                    }
+                }
+                
+                /* 美化卡片样式 */
+                .quote-card {
+                    padding: 25px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    background-color: rgba(255, 255, 255, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    backdrop-filter: blur(5px);
+                    -webkit-backdrop-filter: blur(5px);
+                }
+                
+                .quote-card:hover {
+                    background-color: rgba(255, 255, 255, 0.12);
+                    border-color: rgba(255, 255, 255, 0.25);
+                }
+                
+                .quote-card .serif-text {
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+            </style>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <h2 class="text-2xl luxury-font mb-6">四月天里的我们</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto mb-8">我们制造了武汉的万般模样，而武汉把我们的脚印酿成了故事。愿这份情谊如诗，岁月如歌。</p>
+                <div class="flex justify-center space-x-8 mb-8">
+                    <!-- 社交媒体链接可以根据需要保留或修改 -->
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.158-1.116-1.466-1.116-1.466-.914-.624.069-.612.069-.612 1.003.07 1.531 1.03 1.531 1.03.898 1.538 2.354 1.093 2.928.834.092-.649.35-1.093.638-1.343-2.236-.255-4.586-1.12-4.586-4.975 0-1.098.391-1.995 1.034-2.698-.104-.254-.447-1.27.097-2.646 0 0 .844-.268 2.766 1.03A9.564 9.564 0 0112 6.836c.85.004 1.705.114 2.504.336 1.922-1.298 2.747-1.03 2.747-1.03.55 1.376.203 2.394.1 2.646.642.703 1.026 1.6 1.026 2.698 0 3.866-2.354 4.718-4.6 4.966.36.31.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.16 22 16.42 22 12c0-5.523-4.477-10-10-10z"></path></svg>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm">© 2024 四月天里的我们 · 用爱编织青春</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-6 left-6 bg-white p-3 rounded-full shadow-lg text-gray-700 hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    
+    <!-- 时光轴指示器 -->
+    <div class="timeline-indicator">
+        <div class="timeline-progress" id="timeline-progress"></div>
+        
+        <!-- 时光轴标记点 -->
+        <div class="timeline-point" style="left: 25%;" id="point-guangba">
+            <div class="timeline-label">广八路</div>
+        </div>
+        <div class="timeline-point" style="left: 50%;" id="point-donghu">
+            <div class="timeline-label">东湖</div>
+        </div>
+        <div class="timeline-point" style="left: 75%;" id="point-playground">
+            <div class="timeline-label">操场</div>
+        </div>
+    </div>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 返回顶部按钮
+        const backToTop = document.getElementById('backToTop');
+        if (backToTop) {
+            window.addEventListener('scroll', () => {
+                if(window.pageYOffset > 300) {
+                    backToTop.classList.remove('hidden');
+                } else {
+                    backToTop.classList.add('hidden');
+                }
+            });
+            
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // 动态下划线效果
+        const animatedUnderlines = document.querySelectorAll('.animated-underline');
+        
+        // 监听滚动，显示动画
+        function checkUnderlines() {
+            animatedUnderlines.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                
+                if (rect.top <= windowHeight * 0.75) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        
+        // 初始检查
+        window.addEventListener('load', checkUnderlines);
+        window.addEventListener('scroll', checkUnderlines);
+        
+        // 时光轴进度和标记点
+        function updateTimelineProgress() {
+            const scrollPosition = window.scrollY;
+            const totalHeight = document.body.scrollHeight - window.innerHeight;
+            const progress = (scrollPosition / totalHeight) * 100;
+            
+            document.getElementById('timeline-progress').style.width = `${progress}%`;
+            
+            // 显示标记点
+            if (progress > 25) {
+                document.getElementById('point-guangba').style.transform = 'scale(1)';
+            }
+            
+            if (progress > 50) {
+                document.getElementById('point-donghu').style.transform = 'scale(1)';
+            }
+            
+            if (progress > 75) {
+                document.getElementById('point-playground').style.transform = 'scale(1)';
+            }
+        }
+        
+        window.addEventListener('scroll', updateTimelineProgress);
+        
+        // 移动端导航栏切换
+        const mobileMenuButton = document.querySelector('nav button.md:hidden');
+        const mobileMenu = document.querySelector('nav .hidden.md:flex');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('flex');
+                mobileMenu.classList.toggle('flex-col');
+                mobileMenu.classList.toggle('space-y-4');
+                mobileMenu.classList.toggle('absolute');
+                mobileMenu.classList.toggle('bg-white');
+                mobileMenu.classList.toggle('w-full');
+                mobileMenu.classList.toggle('left-0');
+                mobileMenu.classList.toggle('top-16');
+                mobileMenu.classList.toggle('shadow-lg');
+            });
+        }
+        
+        // 语句卡片点击效果
+        document.querySelectorAll('.quote-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // 这里可以添加展开更多内容的逻辑，比如模态框或切换显示内容
+                alert('想要探索更多关于我们的故事？敬请期待完整版上线~');
+            });
+        });
+        
+        // 点击卡片显示完整内容的模态框
+        document.querySelectorAll('.quote-card').forEach((card, index) => {
+            const quotes = [
+                [
+                    "山东山西，南方北方，千千万万人中我们四个聚在了广八路的鸡公煲。",
+                    "命运让我们相遇，像四块形状不一的拼图，凑成属于我们四个的花园。"
+                ],
+                [
+                    "分开是必然，但回忆是永续的——就像久未见面的白月光，偶然照面便知从未不爱。",
+                    "我们制造了武汉的万般模样，而武汉把我们的脚印酿成了故事。"
+                ],
+                [
+                    "我的世界本只有星星与夕阳，直到与你们共仰星空更璀璨，同别夕阳更遗憾。",
+                    "你们是我稳定的情绪来源，是能放心卸下伪装的避风港。"
+                ],
+                [
+                    "曾经讨厌镜头的我，因你们学会了坦然——原来被珍藏的不是特别的人，而是共同经历本身。",
+                    "孤独的路因同行变得热闹，平凡的日子被你们过成闪闪发光的诗。"
+                ],
+                [
+                    "日后联系或会稀薄，但若想念，请随时拨通时光的电话。",
+                    "山水一程三生有幸，纵使轨迹分离，青志的灯火永远为我们留一盏。"
+                ]
+            ];
+            
+            card.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                const fullQuotes = quotes[index].join('\n\n');
+                alert(`${title}\n\n${fullQuotes}`);
+            });
+        });
+    </script>
+</body>
+</html>

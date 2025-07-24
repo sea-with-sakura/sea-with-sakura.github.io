@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BF16转换器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+          },
+        },
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">BF16 转换器</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 十六进制转十进制 -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-700 mb-3">十六进制 → 十进制</h2>
+          <div class="mb-4">
+            <label for="hex-input" class="block text-sm font-medium text-gray-600 mb-1">BF16 十六进制值</label>
+            <input 
+              type="text" 
+              id="hex-input" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              placeholder="例如: 41F0"
+            >
+          </div>
+          <div>
+            <label for="dec-output" class="block text-sm font-medium text-gray-600 mb-1">十进制结果</label>
+            <textarea 
+              id="dec-output" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 resize-none h-24"
+              readonly
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- 十进制转十六进制 -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-700 mb-3">十进制 → 十六进制</h2>
+          <div class="mb-4">
+            <label for="dec-input" class="block text-sm font-medium text-gray-600 mb-1">十进制值</label>
+            <input 
+              type="text" 
+              id="dec-input" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              placeholder="例如: 3.14"
+            >
+          </div>
+          <div>
+            <label for="hex-output" class="block text-sm font-medium text-gray-600 mb-1">BF16 十六进制结果</label>
+            <textarea 
+              id="hex-output" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 resize-none h-24"
+              readonly
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-center space-x-4">
+        <button id="convert-hex" class="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium shadow-sm">
+          <i class="fa-solid fa-calculator mr-2"></i>转换十六进制
+        </button>
+        <button id="convert-dec" class="px-6 py-3 bg-secondary text-white rounded-md hover:bg-secondary/90 transition-colors font-medium shadow-sm">
+          <i class="fa-solid fa-calculator mr-2"></i>转换十进制
+        </button>
+        <button id="clear-all" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors font-medium shadow-sm">
+          <i class="fa-solid fa-eraser mr-2"></i>清空
+        </button>
+      </div>
+
+      <!-- 转换结果详情 -->
+      <div id="result-details" class="mt-8 hidden">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">转换详情</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-gray-50 p-3 rounded-md">
+            <h3 class="text-sm font-medium text-gray-600">符号位</h3>
+            <p id="sign-bit" class="text-gray-800"></p>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-md">
+            <h3 class="text-sm font-medium text-gray-600">指数位</h3>
+            <p id="exponent" class="text-gray-800"></p>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-md">
+            <h3 class="text-sm font-medium text-gray-600">尾数位</h3>
+            <p id="mantissa" class="text-gray-800"></p>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-md">
+            <h3 class="text-sm font-medium text-gray-600">二进制表示</h3>
+            <p id="binary-representation" class="text-gray-800"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-4 mt-8">
+    <div class="container mx-auto px-4 text-center text-sm">
+      BF16 Converter | designed by sakura
+    </div>
+  </footer>
+
+  <script>
+    // BF16转换逻辑
+    document.addEventListener('DOMContentLoaded', function() {
+      // 获取DOM元素
+      const hexInput = document.getElementById('hex-input');
+      const decOutput = document.getElementById('dec-output');
+      const decInput = document.getElementById('dec-input');
+      const hexOutput = document.getElementById('hex-output');
+      const convertHexBtn = document.getElementById('convert-hex');
+      const convertDecBtn = document.getElementById('convert-dec');
+      const clearAllBtn = document.getElementById('clear-all');
+      const resultDetails = document.getElementById('result-details');
+      const signBit = document.getElementById('sign-bit');
+      const exponent = document.getElementById('exponent');
+      const mantissa = document.getElementById('mantissa');
+      const binaryRepresentation = document.getElementById('binary-representation');
+
+      // 十六进制转十进制
+      convertHexBtn.addEventListener('click', function() {
+        const hexValue = hexInput.value.trim();
+        if (!hexValue) {
+          alert('请输入BF16十六进制值');
+          return;
+        }
+
+        try {
+          if (!/^[0-9A-Fa-f]{4}$/.test(hexValue)) {
+            throw new Error('BF16十六进制值必须是4个字符');
+          }
+
+          const decimalValue = hexToBf16(hexValue);
+          decOutput.value = decimalValue;
+          
+          displayBf16Details(hexValue);
+          resultDetails.classList.remove('hidden');
+          
+          // 添加转换成功的视觉反馈
+          decOutput.classList.add('ring-2', 'ring-primary/50');
+          setTimeout(() => {
+            decOutput.classList.remove('ring-2', 'ring-primary/50');
+          }, 500);
+          
+          // 按钮动画
+          convertHexBtn.classList.add('scale-95');
+          setTimeout(() => {
+            convertHexBtn.classList.remove('scale-95');
+          }, 200);
+        } catch (error) {
+          decOutput.value = '错误: ' + error.message;
+          decOutput.classList.add('ring-2', 'ring-red-500');
+          setTimeout(() => {
+            decOutput.classList.remove('ring-2', 'ring-red-500');
+          }, 1500);
+        }
+      });
+
+      // 十进制转十六进制
+      convertDecBtn.addEventListener('click', function() {
+        const decValue = decInput.value.trim();
+        if (!decValue) {
+          alert('请输入十进制值');
+          return;
+        }
+
+        try {
+          if (!/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(decValue)) {
+            throw new Error('请输入有效的十进制数字');
+          }
+
+          const hexValue = bf16ToHex(parseFloat(decValue));
+          hexOutput.value = hexValue;
+          
+          displayBf16Details(hexValue);
+          resultDetails.classList.remove('hidden');
+          
+          // 添加转换成功的视觉反馈
+          hexOutput.classList.add('ring-2', 'ring-secondary/50');
+          setTimeout(() => {
+            hexOutput.classList.remove('ring-2', 'ring-secondary/50');
+          }, 500);
+          
+          // 按钮动画
+          convertDecBtn.classList.add('scale-95');
+          setTimeout(() => {
+            convertDecBtn.classList.remove('scale-95');
+          }, 200);
+        } catch (error) {
+          hexOutput.value = '错误: ' + error.message;
+          hexOutput.classList.add('ring-2', 'ring-red-500');
+          setTimeout(() => {
+            hexOutput.classList.remove('ring-2', 'ring-red-500');
+          }, 1500);
+        }
+      });
+
+      // 清空所有输入和输出
+      clearAllBtn.addEventListener('click', function() {
+        hexInput.value = '';
+        decOutput.value = '';
+        decInput.value = '';
+        hexOutput.value = '';
+        resultDetails.classList.add('hidden');
+        hexInput.focus();
+        
+        // 按钮动画
+        clearAllBtn.classList.add('scale-95');
+        setTimeout(() => {
+          clearAllBtn.classList.remove('scale-95');
+        }, 200);
+      });
+
+      // BF16转换函数
+      function hexToBf16(hex) {
+        const hexInt = parseInt(hex, 16);
+        const sign = (hexInt & 0x8000) ? -1 : 1;
+        const exponentBits = (hexInt >> 7) & 0xFF;
+        const mantissaBits = hexInt & 0x7F;
+        const exponentValue = exponentBits - 127;
+        
+        let mantissaValue = 1.0;
+        for (let i = 0; i < 7; i++) {
+          if (mantissaBits & (1 << (6 - i))) {
+            mantissaValue += Math.pow(2, -(i + 1));
+          }
+        }
+        
+        let result;
+        if (exponentBits === 0xFF) {
+          result = mantissaBits === 0 ? 
+            (sign === 1 ? Infinity : -Infinity) : 
+            NaN;
+        } else if (exponentBits === 0) {
+          result = sign * mantissaValue * Math.pow(2, -126);
+        } else {
+          result = sign * mantissaValue * Math.pow(2, exponentValue);
+        }
+        
+        return result;
+      }
+
+      function bf16ToHex(value) {
+        if (isNaN(value)) {
+          return "7FFF";
+        }
+        if (value === Infinity) {
+          return "7F80";
+        }
+        if (value === -Infinity) {
+          return "FF80";
+        }
+        
+        if (value === 0) {
+          return (1 / value === -Infinity) ? "8000" : "0000";
+        }
+        
+        const sign = value < 0 ? 1 : 0;
+        value = Math.abs(value);
+        
+        let exponent = 0;
+        let mantissa;
+        
+        if (value >= 1.0) {
+          while (value >= 2.0) {
+            value /= 2.0;
+            exponent++;
+          }
+        } else {
+          while (value < 1.0) {
+            value *= 2.0;
+            exponent--;
+          }
+        }
+        
+        const biasedExponent = exponent + 127;
+        mantissa = (value - 1.0) * 128;
+        mantissa = Math.round(mantissa);
+        
+        if (biasedExponent >= 255) {
+          return sign ? "FF80" : "7F80";
+        }
+        
+        let bf16Value = (sign << 15) | (biasedExponent << 7) | mantissa;
+        return bf16Value.toString(16).toUpperCase().padStart(4, '0');
+      }
+
+      // 显示转换详情
+      function displayBf16Details(hexValue) {
+        const hexInt = parseInt(hexValue, 16);
+        const sign = (hexInt & 0x8000) ? 1 : 0;
+        const exponentBits = (hexInt >> 7) & 0xFF;
+        const mantissaBits = hexInt & 0x7F;
+        
+        const binaryStr = hexInt.toString(2).padStart(16, '0');
+        const signBinary = binaryStr.substring(0, 1);
+        const exponentBinary = binaryStr.substring(1, 9);
+        const mantissaBinary = binaryStr.substring(9);
+        
+        signBit.textContent = `${sign} (${signBinary})`;
+        exponent.textContent = `${exponentBits} (${exponentBinary})`;
+        mantissa.textContent = `${mantissaBits} (${mantissaBinary})`;
+        binaryRepresentation.textContent = `${binaryStr} (${signBinary} ${exponentBinary} ${mantissaBinary})`;
+      }
+    });
+  </script>
+</body>
+</html>
+    
